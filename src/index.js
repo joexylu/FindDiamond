@@ -50,7 +50,7 @@ var basketballMesh = new Physijs.SphereMesh( basketballGeo, basketballMtl );
 
 var sphereGroup = new THREE.Group();
 sphereGroup.add(basketballMesh)
-sphereGroup.position.set(0, 1, 90);
+sphereGroup.position.set(0, 1, 20);
 scene.add(sphereGroup);
 
 // scene.add( basketballMesh ); 
@@ -62,38 +62,95 @@ groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
 groundTexture.repeat.set( 10, 200 );
 var groundMaterial = new THREE.MeshBasicMaterial({map: groundTexture, side:THREE.DoubleSide})
 var meshFloor = new Physijs.BoxMesh(
-    new THREE.PlaneGeometry(20,200,20,20),
+    new THREE.PlaneGeometry(20,40,0),
     groundMaterial
 );
 meshFloor.rotation.x -= Math.PI / 2; // Rotate the floor 90 degrees
 scene.add(meshFloor);
 
-//hoop
 
+//add models:
+var loadingManager = null;
+var RESOURCES_LOADED = false;
+var meshes = {};
 
-// var hoopMtl = new MTLLoader();
-// hoopMtl.setPath( "../obj/" );
-// hoopMtl.load('basketball_hoop.jpg', function(materials){
+loadingManager = new THREE.LoadingManager();
+loadingManager.onProgress = function(item, loaded, total){
+    console.log(item, loaded, total);
+};
+loadingManager.onLoad = function(){
+    console.log("loaded all resources");
+    RESOURCES_LOADED = true;
+    onResourcesLoaded();
+};
 
-// var hoop = new OBJLoader();
-// // hoop.setMaterials(materials)
-// hoop.setPath( "../obj/" );
-// hoop.load('basketball_hoop.obj', function(hoopObject){
+var models = {
+    block:{
+        obj: "../obj/MoreObj/block.obj",
+        mtl: "../obj/MoreObj/block.mtl",
+        mesh: null
+    },
+    blockSnow:{
+        obj: "../obj/MoreObj/blockSnow.obj",
+        mtl: "../obj/MoreObj/blockSnow.mtl",
+        mesh: null
+    },
+    crate:{
+        obj: "../obj/MoreObj/crate.obj",
+        mtl: "../obj/MoreObj/crate.mtl",
+        mesh: null
+    },
+    spikes:{
+        obj: "../obj/MoreObj/spikesLarge.obj",
+        mtl: "../obj/MoreObj/spikesLarge.mtl",
+        mesh: null
+    }
+}
 
-//     hoopObject.scale.set(0.0015,0.0015,0.0015);
-//     scene.add(hoopObject)
-//     hoopObject.position.set(0,11,-10)
+for( var _key in models ){
+    (function(key){
+        var mtlLoader = new MTLLoader(loadingManager);
+        mtlLoader.load(models[key].mtl, function(materials){
+            materials.preload();
+            var objLoader = new OBJLoader(loadingManager);
+            objLoader.setMaterials(materials);
+            objLoader.load(models[key].obj, function(mesh){
+                models[key].mesh = mesh;  
+            });
+        });
+        
+    })(_key);
+}
+
+//random method:
+function getRandom(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+function onResourcesLoaded(){
+
+    const arr = [models.block.mesh.clone(), models.blockSnow.mesh.clone(), models.crate.mesh.clone(), models.spikes.mesh.clone()]
+
+    for (let i = 0; i < 15; i ++){
+            meshes[i] = models.block.mesh.clone()
+    }
+    for (let i = 15; i < 30; i ++){
+        meshes[i] = models.blockSnow.mesh.clone()
+    }
+    for (let i = 30; i < 45; i ++){
+        meshes[i] = models.crate.mesh.clone()
+    }
+    for (let i = 45; i < 60; i ++){
+        meshes[i] = models.spikes.mesh.clone()
+    }
+    var items = Object.values(meshes) 
+    for(let j = 0; j < items.length; j ++){
+        items[j].position.set(getRandom(-9,9), 0, getRandom(-18,18))
+        scene.add(items[j]);
+    }
+}
+
 // })
-
-
-
-// })
-
-// var render = function(){
-//     requestAnimationFrame(render);
-
-//     renderer.render( scene, camera );
-// }
 
 
 // control: camera
