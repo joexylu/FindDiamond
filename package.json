@@ -1,5 +1,5 @@
 {
-  "name": "GetBuckets2",
+  "name": "FindDiamond",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joexylu/GetBuckets2.git"
+    "url": "git+https://github.com/joexylu/FindDiamond.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/joexylu/GetBuckets2/issues"
+    "url": "https://github.com/joexylu/FindDiamond/issues"
   },
-  "homepage": "https://github.com/joexylu/GetBuckets2#readme",
+  "homepage": "https://github.com/joexylu/FindDiamond#readme",
   "devDependencies": {
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"

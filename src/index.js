@@ -87,7 +87,7 @@ Ballsphere.position.set(0,0.5,20)
 var loader = new THREE.FontLoader();
 loader.load( '../font/helvetiker_regular.typeface.json', function ( font ) {
 
-	var geometry = new THREE.TextGeometry( 'Get Diamond', {
+	var geometry = new THREE.TextGeometry( 'Find Diamond', {
 		font: font,
 		size: 80,
 		height: 5,
