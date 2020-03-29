@@ -31,7 +31,7 @@ window.addEventListener('resize', ()=>{
     camera.updateProjectionMatrix();
 })
 camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 5, 5);
+camera.position.set(0, 5, -5);
 camera.lookAt(scene.position);
 //add light
 scene.add( light );
@@ -71,6 +71,54 @@ function initial(){
     var meshFloor = new THREE.Mesh(new THREE.PlaneGeometry(20,40,0),groundMaterial);
     meshFloor.rotation.x -= Math.PI / 2; // Rotate the floor 90 degrees
     scene.add(meshFloor);
+    // add text:
+    //title:
+    var loader = new THREE.FontLoader();
+    loader.load( '../font/helvetiker_regular.typeface.json', function ( font ) {
+    
+        var geometry = new THREE.TextGeometry( 'Find Diamond', {
+            font: font,
+            size: 80,
+            height: 5,
+            curveSegments: 12,
+            bevelEnabled: true,
+            bevelThickness: 10,
+            bevelSize: 8,
+            bevelOffset: 0,
+            bevelSegments: 5
+        } );
+        var mater = new THREE.MeshNormalMaterial();
+        var text2 = new THREE.Mesh( geometry, mater );
+        text2.position.set(3,4.3,20);
+        text2.scale.set(0.01,0.01,0.01);
+        text2.rotation.y -= Math.PI 
+        text2.name = "text2"
+        scene.add(text2)
+    } );
+    
+    //click to start:
+    var loader = new THREE.FontLoader();
+    loader.load( '../font/helvetiker_regular.typeface.json', function ( font ) {
+    
+        var geometry = new THREE.TextGeometry( 'Click to Start', {
+            font: font,
+            size: 80,
+            height: 5,
+            curveSegments: 12,
+            bevelEnabled: true,
+            bevelThickness: 10,
+            bevelSize: 8,
+            bevelOffset: 0,
+            bevelSegments: 5
+        } );
+        var mater = new THREE.MeshNormalMaterial();
+        var text1 = new THREE.Mesh( geometry, mater );
+        text1.position.set(3,3,20);
+        text1.scale.set(0.01,0.01,0.01);
+        text1.rotation.y -= Math.PI 
+        text1.name = "text1"
+        scene.add(text1)
+    } );
 }
     
 
@@ -80,56 +128,6 @@ var material = new THREE.MeshNormalMaterial();
 var Ballsphere = new THREE.Mesh( geometry, material );
 Ballsphere.position.set(0,0.5,20)
 
-
-
-// add text:
-
-var loader = new THREE.FontLoader();
-loader.load( '../font/helvetiker_regular.typeface.json', function ( font ) {
-
-	var geometry = new THREE.TextGeometry( 'Find Diamond', {
-		font: font,
-		size: 80,
-		height: 5,
-		curveSegments: 12,
-		bevelEnabled: true,
-		bevelThickness: 10,
-		bevelSize: 8,
-		bevelOffset: 0,
-		bevelSegments: 5
-    } );
-    var mater = new THREE.MeshNormalMaterial();
-    var text2 = new THREE.Mesh( geometry, mater );
-    text2.position.set(3,4.3,20);
-    text2.scale.set(0.01,0.01,0.01);
-    text2.rotation.y -= Math.PI 
-    text2.name = "text2"
-    scene.add(text2)
-} );
-
-//click to start:
-var loader = new THREE.FontLoader();
-loader.load( '../font/helvetiker_regular.typeface.json', function ( font ) {
-
-	var geometry = new THREE.TextGeometry( 'Click to Start', {
-		font: font,
-		size: 80,
-		height: 5,
-		curveSegments: 12,
-		bevelEnabled: true,
-		bevelThickness: 10,
-		bevelSize: 8,
-		bevelOffset: 0,
-		bevelSegments: 5
-    } );
-    var mater = new THREE.MeshNormalMaterial();
-    var text1 = new THREE.Mesh( geometry, mater );
-    text1.position.set(3,3,20);
-    text1.scale.set(0.01,0.01,0.01);
-    text1.rotation.y -= Math.PI 
-    text1.name = "text1"
-    scene.add(text1)
-} );
 
 function ControlUpdate(Ballsphere){
 	var delta = clock.getDelta(); // seconds.
@@ -145,11 +143,10 @@ function ControlUpdate(Ballsphere){
     // move forwards/backwards/left/right
     if (keyboard.pressed("W") )  Ballsphere.translateZ( -moveDistance );
     if ( keyboard.pressed("S") )Ballsphere.translateZ(  moveDistance );
-    if (isValidPos(Ballsphere.position, moveDistance) &&  keyboard.pressed("Q") ) Ballsphere.translateX( -moveDistance );
-    if ( isValidPos(Ballsphere.position, moveDistance) && keyboard.pressed("E") ) Ballsphere.translateX(  moveDistance );	
+    if (keyboard.pressed("Q") ) Ballsphere.translateX( -moveDistance );
+    if (keyboard.pressed("E") ) Ballsphere.translateX(  moveDistance );	
         
-    // rotate left/right/up/down
-    var rotation_matrix = new THREE.Matrix4().identity();
+    // camera rotate left/right/up/down
     if ( keyboard.pressed("A") )
         Ballsphere.rotateOnAxis( new THREE.Vector3(0,1,0), rotateAngle);
     if ( keyboard.pressed("D") )
@@ -171,7 +168,6 @@ function ControlUpdate(Ballsphere){
         Ballsphere.position.z += moveDistance;
                 
     var relativeCameraOffset = new THREE.Vector3(0,3,5);
-
     var cameraOffset = relativeCameraOffset.applyMatrix4( Ballsphere.matrixWorld );
 
     camera.position.x = cameraOffset.x;
@@ -194,12 +190,12 @@ function ControlUpdate(Ballsphere){
         if ( winning.length > 0 && winning[0].distance < directionVector.length() ){
             win = true;
         }
-    }
+    }    
     if (collided === true){
         setTimeout(()=>{
             collided = false
             Ballsphere.position.set(0,0.5,20);
-        }, 2000)
+        }, 500)
     }
     if (win === true){
         alert("win, reload to new game")
@@ -218,14 +214,14 @@ function isValidPos(BallPos){
         return false
     }
     return true
-    
-    // if ((BallPos.z - moveDis) < -20.5) return false;
-    // if ((BallPos.z + moveDis) > 20.5) return false;
 }
 
 
 function animate(){ 
     // scene.simulate();
+    if (win=== true){
+        return
+    }
     requestAnimationFrame(animate);
     render();
 
@@ -234,17 +230,15 @@ function animate(){
     } else{
         setTimeout(()=>{
             Ballsphere.position.set(0,0.5,20);
-        }, 2000)
+        }, 500)
     }
 }
-
-function render() 
-{
+function render() {
     renderer.clear()
 	renderer.render( scene, camera );
 }
 
-
+// playGame:
 initial();
 animate();
 
@@ -254,5 +248,4 @@ document.body.addEventListener("click", () => {
 });
 
 const screen = document.getElementsByTagName('canvas')[0];
-screen.innerHTML += "<div class='title'>GetDiamond!</div>";
-screen.innerHTML += "<div id='HitWall'>Hit the wall, press Z to back to origin</div>";
+screen.innerHTML += "<button onClick='window.location.reload();'>"
