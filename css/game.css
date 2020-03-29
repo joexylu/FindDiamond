@@ -1,0 +1,8 @@
+.title{
+    color: white;
+    z-index: 100;
+}
+
+canvas{
+    z-index: 1;
+}

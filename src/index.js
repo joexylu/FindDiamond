@@ -12,17 +12,19 @@ import light from "./light"
 var camera, scene, renderer;
 var clock = new THREE.Clock();
 var keyboard = new THREEx.KeyboardState();
-var time = 0;
 let collidableMeshList = [];
 let winningMesh = []
+let collided = false;
+let win = false;
 
 // new scene
 scene = new THREE.Scene();
 // scene.setGravity(new THREE.Vector3(0, -10, 0))
 renderer = new THREE.WebGLRenderer( { antialias: true } );
-renderer.setClearColor("#e5e5e5")
+renderer.setClearColor("black")
 renderer.setSize( window.innerWidth, window.innerHeight );
-$("#game-show-place").append(renderer.domElement);
+// $("#game-show-place").append(renderer.domElement);
+document.body.append(renderer.domElement);
 window.addEventListener('resize', ()=>{
     renderer.setSize( window.innerWidth, window.innerHeight );
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -44,9 +46,9 @@ function initial(){
     winningMesh = []
 
     //add random walls:
-    var BlockGeometry = new THREE.CubeGeometry(getRandom(1.5,3), 1, getRandom(0.5,0.7));
+    var BlockGeometry = new THREE.CubeGeometry(getRandom(5,6), 1, getRandom(5,6));
     var BlockMaterial = new THREE.MeshNormalMaterial();
-    for (let i = 0; i < 80; i ++){
+    for (let i = 0; i < 10; i ++){
         var wall = new THREE.Mesh(BlockGeometry, BlockMaterial);
         wall.position.set(getRandom(-10,10), 0, getRandom(-17,17));
         wall.rotateY(getRandom(0, Math.PI));
@@ -73,55 +75,52 @@ function initial(){
     
 
 // ball model:
-var geometry = new THREE.SphereGeometry(0.2, 32,32);
+var geometry = new THREE.SphereGeometry(0.2, 10,10);
 var material = new THREE.MeshNormalMaterial();
 var Ballsphere = new THREE.Mesh( geometry, material );
-scene.add(Ballsphere)
+// scene.add(Ballsphere)
 Ballsphere.position.set(0,0.25,20)
 
 
-
-function ControlUpdate(){
+function ControlUpdate(Ballsphere){
 	var delta = clock.getDelta(); // seconds.
-	var moveDistance = 50 * delta; // 200 pixels per second
-	var rotateAngle = Math.PI / 1 * delta;   // pi/2 radians (90 degrees) per second
+	var moveDistance = 5 * delta;
+	var rotateAngle = Math.PI / 5 * delta;
 
-	// move forwards/backwards/left/right
-    if ( keyboard.pressed("W") )    
-		Ballsphere.translateZ( -moveDistance );
-	if ( keyboard.pressed("S") )
-		Ballsphere.translateZ(  moveDistance );
-	if ( keyboard.pressed("Q") )
-		Ballsphere.translateX( -moveDistance );
-	if ( keyboard.pressed("E") )
-		Ballsphere.translateX(  moveDistance );	
+    //ball reset
+    if ( keyboard.pressed("Z") )
+    {
+        Ballsphere.position.set(0,0.25,20);
+    }
 
-	// rotate left/right/up/down
-	var rotation_matrix = new THREE.Matrix4().identity();
-	if ( keyboard.pressed("A") )
-		Ballsphere.rotateOnAxis( new THREE.Vector3(0,1,0), rotateAngle);
-	if ( keyboard.pressed("D") )
-		Ballsphere.rotateOnAxis( new THREE.Vector3(0,1,0), -rotateAngle);
-	if ( keyboard.pressed("R") )
-		Ballsphere.rotateOnAxis( new THREE.Vector3(1,0,0), rotateAngle);
-	if ( keyboard.pressed("F") )
-		Ballsphere.rotateOnAxis( new THREE.Vector3(1,0,0), -rotateAngle);
-	
-	if ( keyboard.pressed("Z") )
-	{
-		Ballsphere.position.set(0,0.25,20);
-	}
-		
-	// global coordinates
-	if ( keyboard.pressed("left") )
-		Ballsphere.position.x -= moveDistance;
-	if ( keyboard.pressed("right") )
-		Ballsphere.position.x += moveDistance;
-	if ( keyboard.pressed("up") )
-		Ballsphere.position.z -= moveDistance;
-	if ( keyboard.pressed("down") )
-		Ballsphere.position.z += moveDistance;
-            
+    // move forwards/backwards/left/right
+    if (keyboard.pressed("W") )  Ballsphere.translateZ( -moveDistance );
+    if ( keyboard.pressed("S") )Ballsphere.translateZ(  moveDistance );
+    if (isValidPos(Ballsphere.position, moveDistance) &&  keyboard.pressed("Q") ) Ballsphere.translateX( -moveDistance );
+    if ( isValidPos(Ballsphere.position, moveDistance) && keyboard.pressed("E") ) Ballsphere.translateX(  moveDistance );	
+        
+    // rotate left/right/up/down
+    var rotation_matrix = new THREE.Matrix4().identity();
+    if ( keyboard.pressed("A") )
+        Ballsphere.rotateOnAxis( new THREE.Vector3(0,1,0), rotateAngle);
+    if ( keyboard.pressed("D") )
+        Ballsphere.rotateOnAxis( new THREE.Vector3(0,1,0), -rotateAngle);
+    if ( keyboard.pressed("R") )
+        Ballsphere.rotateOnAxis( new THREE.Vector3(1,0,0), rotateAngle);
+    if ( keyboard.pressed("F") )
+        Ballsphere.rotateOnAxis( new THREE.Vector3(1,0,0), -rotateAngle);
+    
+    
+    // global coordinates
+    if ( keyboard.pressed("left"))
+        Ballsphere.position.x -= moveDistance;
+    if ( keyboard.pressed("right") )
+        Ballsphere.position.x += moveDistance;
+    if (keyboard.pressed("up") )
+        Ballsphere.position.z -= moveDistance;
+    if (keyboard.pressed("down") )
+        Ballsphere.position.z += moveDistance;
+                
     var relativeCameraOffset = new THREE.Vector3(0,3,5);
 
     var cameraOffset = relativeCameraOffset.applyMatrix4( Ballsphere.matrixWorld );
@@ -141,23 +140,39 @@ function ControlUpdate(){
         var collisionResults = ray.intersectObjects( collidableMeshList );
         var winning = ray.intersectObjects( winningMesh );
 		if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ){
-            
+            collided = true
         } 
         if ( winning.length > 0 && winning[0].distance < directionVector.length() ){
-
+            win = true;
         }
     }	
 }
 
 
+function isValidPos(BallPos){
+    if ((BallPos.x) <= -10){      
+        return false;
+    } else if ((BallPos.x ) >= 10) {
+        return false;
+    }
+    return true
+    
+    // if ((BallPos.z - moveDis) < -20.5) return false;
+    // if ((BallPos.z + moveDis) > 20.5) return false;
+}
+
 
 function animate(){ 
     // scene.simulate();
     requestAnimationFrame(animate);
-    var delta = clock.getDelta();
-    time += delta;
     render();
-    ControlUpdate()
+    if (isValidPos(Ballsphere.position)){
+        ControlUpdate(Ballsphere)
+    } else{
+        setTimeout(()=>{
+            Ballsphere.position.set(0,0.25,20);
+        }, 2000)
+    }
 }
 
 function render() 
@@ -168,7 +183,12 @@ function render()
 
 
 initial();
-
 animate();
 
+document.body.addEventListener("click", () => {
+    scene.add(Ballsphere);
+});
 
+const screen = document.getElementsByTagName('canvas')[0];
+screen.innerHTML += "<div class='title'>GetDiamond!</div>";
+screen.innerHTML += "<div id='HitWall'>Hit the wall, press Z to back to origin</div>";
