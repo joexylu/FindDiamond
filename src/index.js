@@ -46,11 +46,11 @@ function initial(){
     winningMesh = []
 
     //add random walls:
-    var BlockGeometry = new THREE.CubeGeometry(getRandom(5,6), 1, getRandom(5,6));
+    var BlockGeometry = new THREE.CubeGeometry(getRandom(2,7), 0, getRandom(2,7));
     var BlockMaterial = new THREE.MeshNormalMaterial();
     for (let i = 0; i < 10; i ++){
         var wall = new THREE.Mesh(BlockGeometry, BlockMaterial);
-        wall.position.set(getRandom(-10,10), 0, getRandom(-17,17));
+        wall.position.set(getRandom(-10,10), 0.5, getRandom(-17,17));
         wall.rotateY(getRandom(0, Math.PI));
         scene.add(wall);
         collidableMeshList.push(wall);
@@ -78,9 +78,58 @@ function initial(){
 var geometry = new THREE.SphereGeometry(0.2, 10,10);
 var material = new THREE.MeshNormalMaterial();
 var Ballsphere = new THREE.Mesh( geometry, material );
-// scene.add(Ballsphere)
-Ballsphere.position.set(0,0.25,20)
+Ballsphere.position.set(0,0.5,20)
 
+
+
+// add text:
+
+var loader = new THREE.FontLoader();
+loader.load( '../font/helvetiker_regular.typeface.json', function ( font ) {
+
+	var geometry = new THREE.TextGeometry( 'Get Diamond', {
+		font: font,
+		size: 80,
+		height: 5,
+		curveSegments: 12,
+		bevelEnabled: true,
+		bevelThickness: 10,
+		bevelSize: 8,
+		bevelOffset: 0,
+		bevelSegments: 5
+    } );
+    var mater = new THREE.MeshNormalMaterial();
+    var text2 = new THREE.Mesh( geometry, mater );
+    text2.position.set(3,4.3,20);
+    text2.scale.set(0.01,0.01,0.01);
+    text2.rotation.y -= Math.PI 
+    text2.name = "text2"
+    scene.add(text2)
+} );
+
+//click to start:
+var loader = new THREE.FontLoader();
+loader.load( '../font/helvetiker_regular.typeface.json', function ( font ) {
+
+	var geometry = new THREE.TextGeometry( 'Click to Start', {
+		font: font,
+		size: 80,
+		height: 5,
+		curveSegments: 12,
+		bevelEnabled: true,
+		bevelThickness: 10,
+		bevelSize: 8,
+		bevelOffset: 0,
+		bevelSegments: 5
+    } );
+    var mater = new THREE.MeshNormalMaterial();
+    var text1 = new THREE.Mesh( geometry, mater );
+    text1.position.set(3,3,20);
+    text1.scale.set(0.01,0.01,0.01);
+    text1.rotation.y -= Math.PI 
+    text1.name = "text1"
+    scene.add(text1)
+} );
 
 function ControlUpdate(Ballsphere){
 	var delta = clock.getDelta(); // seconds.
@@ -145,7 +194,16 @@ function ControlUpdate(Ballsphere){
         if ( winning.length > 0 && winning[0].distance < directionVector.length() ){
             win = true;
         }
-    }	
+    }
+    if (collided === true){
+        setTimeout(()=>{
+            collided = false
+            Ballsphere.position.set(0,0.5,20);
+        }, 2000)
+    }
+    if (win === true){
+        alert("win, reload to new game")
+    }
 }
 
 
@@ -154,6 +212,10 @@ function isValidPos(BallPos){
         return false;
     } else if ((BallPos.x ) >= 10) {
         return false;
+    } else if ((BallPos.z ) <= -20.5){
+        return false
+    } else if ((BallPos.z ) >= 20.5){
+        return false
     }
     return true
     
@@ -166,11 +228,12 @@ function animate(){
     // scene.simulate();
     requestAnimationFrame(animate);
     render();
+
     if (isValidPos(Ballsphere.position)){
         ControlUpdate(Ballsphere)
     } else{
         setTimeout(()=>{
-            Ballsphere.position.set(0,0.25,20);
+            Ballsphere.position.set(0,0.5,20);
         }, 2000)
     }
 }
@@ -187,6 +250,7 @@ animate();
 
 document.body.addEventListener("click", () => {
     scene.add(Ballsphere);
+    scene.remove(scene.children[14]);
 });
 
 const screen = document.getElementsByTagName('canvas')[0];

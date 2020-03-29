@@ -1,8 +1,15 @@
+body{
+    width: 900px;
+    height: 900px;
+}
+
 .title{
+    position: absolute;
     color: white;
     z-index: 100;
+
 }
 
 canvas{
-    z-index: 1;
+    z-index: -1;
 }
