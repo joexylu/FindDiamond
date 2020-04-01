@@ -64,7 +64,7 @@ function initial(){
 
     // field 
     
-    var groundTexture = new THREE.TextureLoader().load("../dist/grass.png");
+    var groundTexture = new THREE.TextureLoader().load('grass.png');
     groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping; 
     groundTexture.repeat.set( 10, 200 );
     var groundMaterial = new THREE.MeshBasicMaterial({map: groundTexture, side:THREE.DoubleSide})
