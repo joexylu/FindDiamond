@@ -18,7 +18,7 @@ geom.merge(ptGeometry, ptMatrix)
 
 // adds texture
 const material = new THREE.MeshBasicMaterial()
-material.map = new THREE.TextureLoader().load('../obj/diamond.png')
+material.map = new THREE.TextureLoader().load('diamond.png')
 const DiamondMesh = new THREE.Mesh(geom, material)
 
 export default DiamondMesh;

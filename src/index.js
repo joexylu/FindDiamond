@@ -74,7 +74,7 @@ function initial(){
     // add text:
     //title:
     var loader = new THREE.FontLoader();
-    loader.load( '../font/helvetiker_regular.typeface.json', function ( font ) {
+    loader.load( 'helvetiker_regular.typeface.json', function ( font ) {
     
         var geometry = new THREE.TextGeometry( 'Find Diamond', {
             font: font,
@@ -98,7 +98,7 @@ function initial(){
     
     //click to start:
     var loader = new THREE.FontLoader();
-    loader.load( '../font/helvetiker_regular.typeface.json', function ( font ) {
+    loader.load( 'helvetiker_regular.typeface.json', function ( font ) {
     
         var geometry = new THREE.TextGeometry( 'Click to Start', {
             font: font,
