@@ -7,6 +7,8 @@
     <title>GetDiamond!</title>
     <link rel="stylesheet" href="./css/game.css">
     <link rel="shortcut icon" href="#" />
+    <script src="https://use.fontawesome.com/e0278f49db.js"></script>
+    <script src="https://kit.fontawesome.com/f64eaac00e.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <script src="./js/three.js"></script>
@@ -18,7 +20,25 @@
     <script src="./js/OrbitControls.js"></script>
     <script src="./js/THREEx.KeyboardState.js"></script>
     <script src="./js/three_fpc.js"></script>
+
+    <div id="winGame">Congrats! Find the Dinamond<br>Press Restart</div>
+    <div id="collide">DONT HIT WALL OR BORDER</div>
     <script src="./dist/main.js"></script>
+
+    <div class="contact-links"> 
+        <a href="https://github.com/joexylu">
+            <i id="github-icon" class="fa fa-github-square"></i>
+        </a>
+        <a href="https://www.linkedin.com/in/joe-xiyang-lu-838459168/">
+            <i id="linkedin-icon" class="fa fa-linkedin-square" ></i>
+        </a> 
+        <a href="https://angel.co/u/joe-xiyang-lu">
+            <i id="angle-icon" class="fa fa-angellist"></i>
+        </a> 
+    </div>
     <audio src="./audio/music.mp3" autoplay loop></audio>
+    <div id="name">Create By Joe Xiyang Lu</div>
+    <div id="MoveDir">Press WASD to move</div>
+    <button class="restart-button red" onClick='window.location.reload();'>Restart</button>
 </body>
 </html>

@@ -1,14 +1,101 @@
-.title{
+canvas {
+}
+
+/* button */
+.restart-button {
     position: absolute;
+    display: block;
+    z-index: 99;
+    right: 0;
+    top: 90%;
+    border: none;
+    background: rgb(109, 99, 199);
+    color: #ffffff !important;
+    font-weight: 500;
+    font-size: 30px;
+    padding: 20px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    display: inline-block;
+    transition: all 0.3s ease 0s;
+}
+.restart-button:hover {
+    color: rgb(109, 99, 199) !important;
+    font-weight: 900 !important;
+    font-size: 30px;
+    letter-spacing: 5px;
+    background: none;
+    -webkit-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+    -moz-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+    transition: all 0.3s ease 0s;
+}
+
+/* all Links */
+.contact-links {
+    position: absolute;
+    font-size: 70px;
+    padding-left: 20px;
+    /* margin-bottom: 400px; */
+    z-index: 99;
+    left: 0;
+    top: 91%;
+}
+.fa:hover {
+    cursor: pointer;
+    transition: 0.5s;
+    text-shadow: 1px 1px 10px white, 0 0 15px white, 0 0 20px white;
+}
+.fa {
+    color: rgb(109, 99, 199);
+}
+a {
+    text-decoration: none;
+}
+
+/* collide */
+#collide {
+    visibility: hidden;
+    font-size: larger;
+    position: absolute;
+    left: 40%;
+    top: 43%;
     color: white;
-    z-index: 100;
-
+    text-transform: uppercase;
+    font: 25px sans-serif;
 }
 
-canvas{
-    z-index: -1;
+#winGame {
+    visibility: hidden;
+    font-size: larger;
+    position: absolute;
+    left: 43%;
+    top: 25%;
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+    font: 25px sans-serif;
 }
 
-button{
-    z-index: 9999;
+#name {
+    visibility: visible;
+    position: absolute;
+    border: none;
+    font: 15px sans-serif;
+    color: #ffffff !important;
+    font-weight: 500;
+    text-transform: uppercase;
+    top: 94%;
+    left: 46%;
+}
+
+#MoveDir {
+    visibility: visible;
+    font-size: larger;
+    position: absolute;
+    left: 46%;
+    top: 3%;
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+    font: 15px sans-serif;
 }

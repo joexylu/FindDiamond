@@ -57,8 +57,8 @@ function initial(){
     }
 
     // Diamond
-    DiamondMesh.position.set(getRandom(-10,10),0.5,-20)
-    DiamondMesh.scale.set(0.8,0.8,0.8)
+    DiamondMesh.position.set(getRandom(-10,10),0.4,-20)
+    DiamondMesh.scale.set(0.4,0.4,0.4)
     scene.add(DiamondMesh)
     winningMesh.push(DiamondMesh)
 
@@ -192,14 +192,16 @@ function ControlUpdate(Ballsphere){
         }
     }    
     if (collided === true){
+        document.getElementById("collide").style.visibility = "visible";
         setTimeout(()=>{
             collided = false
             Ballsphere.position.set(0,0.5,20);
-        }, 500)
+            document.getElementById("collide").style.visibility = "hidden";
+        }, 1000)
     }
-    if (win === true){
-        alert("win, reload to new game")
-    }
+    // if (win === true){
+        
+    // }
 }
 
 
@@ -220,7 +222,7 @@ function isValidPos(BallPos){
 function animate(){ 
     // scene.simulate();
     if (win=== true){
-        return
+        return gameOver()
     }
     requestAnimationFrame(animate);
     render();
@@ -228,9 +230,11 @@ function animate(){
     if (isValidPos(Ballsphere.position)){
         ControlUpdate(Ballsphere)
     } else{
+        document.getElementById("collide").style.visibility = "visible";
         setTimeout(()=>{
+            document.getElementById("collide").style.visibility = "hidden";
             Ballsphere.position.set(0,0.5,20);
-        }, 500)
+        }, 1000)
     }
 }
 function render() {
@@ -242,10 +246,15 @@ function render() {
 initial();
 animate();
 
+function gameOver(){
+    return document.getElementById("winGame").style.visibility = "visible";
+}
+
 document.body.addEventListener("click", () => {
     scene.add(Ballsphere);
     scene.remove(scene.children[14]);
 });
 
+
+
 const screen = document.getElementsByTagName('canvas')[0];
-screen.innerHTML += "<button onClick='window.location.reload();'>"
